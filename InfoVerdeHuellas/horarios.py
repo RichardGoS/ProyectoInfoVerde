@@ -4,7 +4,8 @@ from datetime import date, datetime
 import os.path
 from time import ctime
 class Horario:
-    ruta = 'static/offices/A.ics'
+    '''Obtiene el horario de las salas desde los calendarios publicados en Google Calendar'''
+    '''diccionario salas'''
     salas = {
         'A': 'https://calendar.google.com/calendar/ical/uceva.edu.co_l5k4pi6mpj74lf8pm4khsjvsso%40group.calendar.google.com/public/basic.ics',
         'B': 'https://calendar.google.com/calendar/ical/uceva.edu.co_uk9iq9n9k65dhtspjnutpa6peo%40group.calendar.google.com/public/basic.ics',
@@ -15,6 +16,7 @@ class Horario:
         'G': 'https://calendar.google.com/calendar/ical/uceva.edu.co_gdrqrq8prv9fp26tks5ijeoa3c%40group.calendar.google.com/public/basic.ics'
     }
     def getCalendar(self):
+        '''Decarga el archivo haciendo uso del diccionario de salas'''
         for k, v in self.salas.items():
             with urlopen(v) as r:
                 with open("static/offices/"+k + ".ics", "wb") as f:
@@ -22,6 +24,8 @@ class Horario:
                     print("%s descargado correctamente." % k)
 
     def getHorario(self):
+        '''Los datos obtenidos por esta función son del 2010 hasta el año actual
+        retorna una lista de diccionarios con el uso, el año y nombre de la sala'''
         lista = list()
         if not os.path.isfile(self.ruta):
             self.getCalendar()
@@ -43,4 +47,3 @@ class Horario:
                                 total += diferencia if diferencia < 10 else (diferencia/24.0)*8
                     lista.append({'uso':total, 'anio':anio, 'name':name})
         return lista
-
